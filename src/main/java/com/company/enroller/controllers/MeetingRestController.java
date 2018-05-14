@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.company.enroller.model.Meeting;
 import com.company.enroller.model.Participant;
+import com.company.enroller.model.SearchString;
 import com.company.enroller.persistence.MeetingService;
 import com.company.enroller.persistence.ParticipantService;
 
@@ -140,6 +141,17 @@ public class MeetingRestController {
 		}
 		meetingService.removeParticipant(requestedMeeting,participant);
 		return new ResponseEntity<Meeting>(requestedMeeting, HttpStatus.OK);
+	}
+	
+	@RequestMapping(value = "/search", method = RequestMethod.GET)
+	public ResponseEntity<?> searchMeetings(@RequestBody SearchString searchString) {
+		Collection<Meeting> meetings = meetingService.getAll();
+		for (Meeting m: meetings) {
+			if  (!m.getTitle().contains(searchString.getTitle()) || !m.getDescription().contains(searchString.getDescription())) {
+				meetings.remove(m);
+			}
+		}
+		return new ResponseEntity<Collection<Meeting>>(meetings, HttpStatus.OK);
 	}
 
 }
