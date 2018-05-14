@@ -23,24 +23,30 @@ public class MeetingService {
 		Query query = connector.getSession().createQuery(hql);
 		return query.list();
 	}
-	
+
 	public Meeting findById(Long id) {
-		return (Meeting)connector.getSession().get(Meeting.class, id);
+		return (Meeting) connector.getSession().get(Meeting.class, id);
 	}
 
 	public void addMeeting(Meeting meeting) {
-		Transaction transaction=connector.getSession().beginTransaction();
+		Transaction transaction = connector.getSession().beginTransaction();
 		connector.getSession().save(meeting);
-		transaction.commit();	
+		transaction.commit();
 
-		
 	}
 
 	public void registerMeeting(Meeting meeting, Participant participant) {
-		Transaction transaction=connector.getSession().beginTransaction();
+		Transaction transaction = connector.getSession().beginTransaction();
 		meeting.addParticipant(participant);
 		connector.getSession().save(meeting);
-		transaction.commit();	
+		transaction.commit();
 	}
-	
+
+	public void deleteMeeting(Meeting requestedMeeting) {
+		Transaction transaction = connector.getSession().beginTransaction();
+		connector.getSession().delete(requestedMeeting);
+		transaction.commit();
+
+	}
+
 }

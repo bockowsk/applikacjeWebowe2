@@ -56,18 +56,18 @@ public class MeetingRestController {
 	public ResponseEntity<?> registerParticipant(@PathVariable("id") long id, @RequestBody Participant participant) {
 		// sprawdzanie czy meeting jest i czy participant jest
 		// czy jest meeting?
-		Meeting meeting=meetingService.findById(id);
-		if ( meeting == null) {
+		Meeting meeting = meetingService.findById(id);
+		if (meeting == null) {
 			return new ResponseEntity<Participant>(HttpStatus.CONFLICT);
 		}
 		// czy jest participant - nie trzeba, to spoczywa na Jackson'ie
-		
+
 		// dodawanie
-		meetingService.registerMeeting(meeting,participant);
+		meetingService.registerMeeting(meeting, participant);
 		// zwrot meetingow?
 		return new ResponseEntity<Meeting>(meeting, HttpStatus.OK);
 	}
-	
+
 	// pobranie uczestnikow
 	@RequestMapping(value = "/{id}/participants", method = RequestMethod.GET)
 	public ResponseEntity<?> getParticipants(@PathVariable("id") long id) {
@@ -76,13 +76,23 @@ public class MeetingRestController {
 			return new ResponseEntity(HttpStatus.NOT_FOUND);
 		}
 		Collection<Participant> participants = meeting.getParticipants();
-		HashSet<String> logins=new HashSet<String>();
-		for (Participant p: participants) {
+		HashSet<String> logins = new HashSet<String>();
+		for (Participant p : participants) {
 			logins.add(p.getLogin());
 		}
 		return new ResponseEntity<Collection<String>>(logins, HttpStatus.OK);
 
 	}
 
+	// kasowanie spotkan
+	@RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
+	public ResponseEntity<?> deleteMeeting(@PathVariable("id") long id) {
+		Meeting requestedMeeting = meetingService.findById(id);
+		if (requestedMeeting == null) {
+			return new ResponseEntity(HttpStatus.NOT_FOUND);
+		}
+		meetingService.deleteMeeting(requestedMeeting);
+		return new ResponseEntity<Meeting>(requestedMeeting, HttpStatus.OK);
+	}
 
 }
