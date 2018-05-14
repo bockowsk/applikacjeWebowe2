@@ -37,4 +37,5 @@ done
 # curl --write-out '\n'  --request POST --header "Content-type: application/json" --data '{"login":"user4", "password":"password"}' http://localhost:8080/meetings/2/registration
 # DELETE meeting
 # curl --write-out '\n'  --request DELETE --header "Content-type: application/json" http://localhost:8080/meetings/2 {"id":2,"title":"some title","description":"some description","date":"some date"}
+# curl --write-out '\n' --request PUT --header "Content-type: application/json" --data '{"title":"Docker containers", "description":"Introduction to Docker containers", "date":"2018-05-25"}' http://localhost:8080/meetings/2
 
