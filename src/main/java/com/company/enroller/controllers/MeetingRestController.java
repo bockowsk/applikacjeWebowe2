@@ -164,7 +164,31 @@ public class MeetingRestController {
 			return new ResponseEntity(new EmptyJsonResponse(), HttpStatus.OK);
 		}
 	}
+
+	@RequestMapping(value = "/search/{id}", method = RequestMethod.POST)
+	public ResponseEntity<?> searchMeetingsByUser(@RequestBody String id) {
+		// sprawdzanie czy taki user jest
+		Participant participant = participantService.findByLogin(id);
+		if (participant == null) {
 			return new ResponseEntity(HttpStatus.NOT_FOUND);
+		}
+		// lista meetingow, w ktorych jest
+		HashSet<Meeting> newSet = new HashSet<Meeting>();
+		Collection<Meeting> meetings = meetingService.getAll();
+		for (Meeting m : meetings) {
+			// sprawdzanie czy jest participant
+			if (!m.getParticipants().contains(participant)) {
+				newSet.add(m);
+			}
+		}
+		for (Meeting m : newSet) {
+			meetings.remove(m);
+		}
+
+		if (meetings.size() > 0) {
+			return new ResponseEntity<Collection<Meeting>>(meetings, HttpStatus.OK);
+		} else {
+			return new ResponseEntity(new EmptyJsonResponse(), HttpStatus.OK);
 		}
 	}
 
