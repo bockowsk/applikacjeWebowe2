@@ -143,7 +143,7 @@ public class MeetingRestController {
 		return new ResponseEntity<Meeting>(requestedMeeting, HttpStatus.OK);
 	}
 	
-	@RequestMapping(value = "/search", method = RequestMethod.GET)
+	@RequestMapping(value = "/search", method = RequestMethod.POST)
 	public ResponseEntity<?> searchMeetings(@RequestBody SearchString searchString) {
 		Collection<Meeting> meetings = meetingService.getAll();
 		for (Meeting m: meetings) {
