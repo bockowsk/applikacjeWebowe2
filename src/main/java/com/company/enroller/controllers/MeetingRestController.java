@@ -37,18 +37,19 @@ public class MeetingRestController {
 		}
 		return new ResponseEntity<Meeting>(meeting, HttpStatus.OK);
 	}
-/*	
+	
 	 @RequestMapping(value = "", method = RequestMethod.POST)
-	 public ResponseEntity<?> addParticipant(@RequestBody Participant participant) {
+	 public ResponseEntity<?> addMeeting(@RequestBody Meeting meeting) {
 		 // czy nie istnieje
-		 if (participantService.findByLogin(participant.getLogin()) != null) {
+		 if (meetingService.findById(meeting.getId()) != null) {
 			 return new ResponseEntity<Participant>(HttpStatus.CONFLICT);
 		 }
-		 participantService.addParticipant(participant);
+		 meetingService.addMeeting(meeting);
 		  
-		 return new ResponseEntity<Participant>(participant,HttpStatus.OK);
+		 return new ResponseEntity<Meeting>(meeting,HttpStatus.OK);
 	 }
-
+/*
+	 
 		@RequestMapping(value = "/{id}", method = RequestMethod.PUT)
 		public ResponseEntity<?> updateParticipant(@PathVariable("id") String login, @RequestBody Participant participant) {
 			Participant requestedParticipant = participantService.findByLogin(login);
