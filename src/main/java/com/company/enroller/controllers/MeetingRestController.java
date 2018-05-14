@@ -1,6 +1,9 @@
 package com.company.enroller.controllers;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +34,18 @@ public class MeetingRestController {
 		Collection<Meeting> meetings = meetingService.getAll();
 		return new ResponseEntity<Collection<Meeting>>(meetings, HttpStatus.OK);
 	}
+	
+	@RequestMapping(value = "/sorted", method = RequestMethod.GET)
+	public ResponseEntity<?> getSortedMeetings() {
+		// pobranie wszystkich
+		Collection<Meeting> meetings = meetingService.getAll();
+		// zmiana na ArrayList
+		ArrayList<Meeting> meetingsList = new ArrayList<Meeting>(Collections.unmodifiableCollection(meetings));
+		// SORTOWANIE
+		Collections.sort(meetingsList);
+		return new ResponseEntity<Collection<Meeting>>(meetingsList, HttpStatus.OK);
+	}
+
 
 	@RequestMapping(value = "/{id}", method = RequestMethod.GET)
 	public ResponseEntity<?> getMeeting(@PathVariable("id") Long id) {
