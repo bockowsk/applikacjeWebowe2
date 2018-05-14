@@ -35,7 +35,7 @@ public class MeetingRestController {
 		Collection<Meeting> meetings = meetingService.getAll();
 		return new ResponseEntity<Collection<Meeting>>(meetings, HttpStatus.OK);
 	}
-	
+
 	@RequestMapping(value = "/sorted", method = RequestMethod.GET)
 	public ResponseEntity<?> getSortedMeetings() {
 		// pobranie wszystkich
@@ -46,7 +46,6 @@ public class MeetingRestController {
 		Collections.sort(meetingsList);
 		return new ResponseEntity<Collection<Meeting>>(meetingsList, HttpStatus.OK);
 	}
-
 
 	@RequestMapping(value = "/{id}", method = RequestMethod.GET)
 	public ResponseEntity<?> getMeeting(@PathVariable("id") Long id) {
@@ -118,10 +117,12 @@ public class MeetingRestController {
 		if (meeting == null) {
 			return new ResponseEntity(HttpStatus.NOT_FOUND);
 		}
-		String newTitle=requestedMeeting.getTitle();
-		String newDescription=requestedMeeting.getDescription();
-		String newDate=requestedMeeting.getDate();
-		meeting.setTitle(newTitle);meeting.setDescription(newDescription);meeting.setDate(newDate);
+		String newTitle = requestedMeeting.getTitle();
+		String newDescription = requestedMeeting.getDescription();
+		String newDate = requestedMeeting.getDate();
+		meeting.setTitle(newTitle);
+		meeting.setDescription(newDescription);
+		meeting.setDate(newDate);
 		meetingService.addMeeting(meeting);
 		return new ResponseEntity<Meeting>(meeting, HttpStatus.OK);
 	}
@@ -139,19 +140,28 @@ public class MeetingRestController {
 		if (participant == null) {
 			return new ResponseEntity(HttpStatus.NOT_FOUND);
 		}
-		meetingService.removeParticipant(requestedMeeting,participant);
+		meetingService.removeParticipant(requestedMeeting, participant);
 		return new ResponseEntity<Meeting>(requestedMeeting, HttpStatus.OK);
 	}
-	
+
 	@RequestMapping(value = "/search", method = RequestMethod.POST)
 	public ResponseEntity<?> searchMeetings(@RequestBody SearchString searchString) {
+		HashSet<Meeting> newSet = new HashSet<Meeting>();
 		Collection<Meeting> meetings = meetingService.getAll();
-		for (Meeting m: meetings) {
-			if  (!m.getTitle().contains(searchString.getTitle()) || !m.getDescription().contains(searchString.getDescription())) {
-				meetings.remove(m);
+		for (Meeting m : meetings) {
+			if (!m.getTitle().contains(searchString.getTitle())
+					|| !m.getDescription().contains(searchString.getDescription())) {
+				newSet.add(m);
 			}
 		}
-		return new ResponseEntity<Collection<Meeting>>(meetings, HttpStatus.OK);
+		for (Meeting m : newSet) {
+			meetings.remove(m);
+		}
+		if (meetings.size() > 0) {
+			return new ResponseEntity<Collection<Meeting>>(meetings, HttpStatus.OK);
+		} else {
+			return new ResponseEntity(HttpStatus.NOT_FOUND);
+		}
 	}
 
 }
