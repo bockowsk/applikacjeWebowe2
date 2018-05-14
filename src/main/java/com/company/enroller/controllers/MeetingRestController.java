@@ -110,4 +110,21 @@ public class MeetingRestController {
 		return new ResponseEntity<Meeting>(meeting, HttpStatus.OK);
 	}
 
+	// kasowanie uczestnika ze spotkania
+	@RequestMapping(value = "/{id}/{id2}", method = RequestMethod.DELETE)
+	public ResponseEntity<?> deleteMeeting(@PathVariable("id") long id, @PathVariable("id2") String id2) {
+		Meeting requestedMeeting = meetingService.findById(id);
+		// sprawdzanie czy jest taki meeting
+		if (requestedMeeting == null) {
+			return new ResponseEntity(HttpStatus.NOT_FOUND);
+		}
+		Participant participant = participantService.findByLogin(id2);
+		// sprawdzanie czy participant istnieje
+		if (participant == null) {
+			return new ResponseEntity(HttpStatus.NOT_FOUND);
+		}
+		meetingService.removeParticipant(requestedMeeting,participant);
+		return new ResponseEntity<Meeting>(requestedMeeting, HttpStatus.OK);
+	}
+
 }

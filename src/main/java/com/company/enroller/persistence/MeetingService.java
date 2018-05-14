@@ -49,4 +49,12 @@ public class MeetingService {
 
 	}
 
+	public void removeParticipant(Meeting requestedMeeting, Participant participant) {
+		requestedMeeting.getParticipants().remove(participant);
+		Transaction transaction = connector.getSession().beginTransaction();
+		connector.getSession().save(requestedMeeting);
+		transaction.commit();
+
+	}
+
 }
