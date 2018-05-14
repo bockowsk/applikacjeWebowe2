@@ -165,8 +165,8 @@ public class MeetingRestController {
 		}
 	}
 
-	@RequestMapping(value = "/search/{id}", method = RequestMethod.POST)
-	public ResponseEntity<?> searchMeetingsByUser(@RequestBody String id) {
+	@RequestMapping(value = "/search/{id}", method = RequestMethod.GET)
+	public ResponseEntity<?> searchMeetingsByUser(@PathVariable("id") String id) {
 		// sprawdzanie czy taki user jest
 		Participant participant = participantService.findByLogin(id);
 		if (participant == null) {
