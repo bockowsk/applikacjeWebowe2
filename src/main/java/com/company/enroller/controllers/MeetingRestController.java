@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.company.enroller.model.EmptyJsonResponse;
 import com.company.enroller.model.Meeting;
 import com.company.enroller.model.Participant;
 import com.company.enroller.model.SearchString;
@@ -160,6 +161,9 @@ public class MeetingRestController {
 		if (meetings.size() > 0) {
 			return new ResponseEntity<Collection<Meeting>>(meetings, HttpStatus.OK);
 		} else {
+			return new ResponseEntity(new EmptyJsonResponse(), HttpStatus.OK);
+		}
+	}
 			return new ResponseEntity(HttpStatus.NOT_FOUND);
 		}
 	}
