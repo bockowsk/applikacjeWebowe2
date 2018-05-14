@@ -35,4 +35,6 @@ done
 #  curl --request POST --header "Content-type: application/json" --data '{"title": "OpenShift for developers", "description": "Openshift w swiecie wytwarzania oprogramowania", "date":"2018-05-23"}' http://localhost:8080/meetings
 # POST registration
 # curl --write-out '\n'  --request POST --header "Content-type: application/json" --data '{"login":"user4", "password":"password"}' http://localhost:8080/meetings/2/registration
+# DELETE meeting
+# curl --write-out '\n'  --request DELETE --header "Content-type: application/json" http://localhost:8080/meetings/2 {"id":2,"title":"some title","description":"some description","date":"some date"}
 
