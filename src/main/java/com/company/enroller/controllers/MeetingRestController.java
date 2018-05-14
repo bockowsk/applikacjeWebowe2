@@ -1,6 +1,7 @@
 package com.company.enroller.controllers;
 
 import java.util.Collection;
+import java.util.HashSet;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -75,7 +76,11 @@ public class MeetingRestController {
 			return new ResponseEntity(HttpStatus.NOT_FOUND);
 		}
 		Collection<Participant> participants = meeting.getParticipants();
-		return new ResponseEntity<Collection<Participant>>(participants, HttpStatus.OK);
+		HashSet<String> logins=new HashSet<String>();
+		for (Participant p: participants) {
+			logins.add(p.getLogin());
+		}
+		return new ResponseEntity<Collection<String>>(logins, HttpStatus.OK);
 
 	}
 
