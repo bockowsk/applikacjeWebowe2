@@ -35,5 +35,12 @@ public class MeetingService {
 
 		
 	}
+
+	public void registerMeeting(Meeting meeting, Participant participant) {
+		Transaction transaction=connector.getSession().beginTransaction();
+		meeting.addParticipant(participant);
+		connector.getSession().save(meeting);
+		transaction.commit();	
+	}
 	
 }
