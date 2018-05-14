@@ -59,10 +59,8 @@ public class MeetingRestController {
 		if ( meeting == null) {
 			return new ResponseEntity<Participant>(HttpStatus.CONFLICT);
 		}
-		// czy jest participant
-		if (participantService.findByLogin(participant.getLogin()) != null) {
-			return new ResponseEntity<Participant>(HttpStatus.CONFLICT);
-		}
+		// czy jest participant - nie trzeba, to spoczywa na Jackson'ie
+		
 		// dodawanie
 		meetingService.registerMeeting(meeting,participant);
 		// zwrot meetingow?
