@@ -51,7 +51,7 @@ public class MeetingRestController {
 		return new ResponseEntity<Meeting>(meeting, HttpStatus.OK);
 	}
 
-	@RequestMapping(value = "/{id}/registration", method = RequestMethod.PUT)
+	@RequestMapping(value = "/{id}/registration", method = RequestMethod.POST)
 	public ResponseEntity<?> registerParticipant(@PathVariable("id") long id, @RequestBody Participant participant) {
 		// sprawdzanie czy meeting jest i czy participant jest
 		// czy jest meeting?
