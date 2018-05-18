@@ -77,7 +77,12 @@ public class MeetingRestController {
 				ArrayList<Meeting> meetingsList = new ArrayList<Meeting>(Collections.unmodifiableCollection(meetings));
 				// SORTOWANIE
 				Collections.sort(meetingsList);
-				return new ResponseEntity<Collection<Meeting>>(meetingsList, HttpStatus.OK);
+				if (meetingsList.size() > 0) {
+					return new ResponseEntity<Collection<Meeting>>(meetingsList, HttpStatus.OK);
+				} else {
+					return new ResponseEntity(new EmptyJsonResponse(), HttpStatus.OK);
+				}
+
 			} else {
 				return new ResponseEntity(HttpStatus.METHOD_NOT_ALLOWED);
 			}
