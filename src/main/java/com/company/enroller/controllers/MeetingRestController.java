@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.company.enroller.model.EmptyJsonResponse;
@@ -31,13 +32,31 @@ public class MeetingRestController {
 	@Autowired
 	MeetingService meetingService;
 
+	// wyswietlanie randomowej listy meetingow oraz posortowanej wg title
 	@RequestMapping(value = "", method = RequestMethod.GET)
-	public ResponseEntity<?> getMeetings() {
-		Collection<Meeting> meetings = meetingService.getAll();
-		return new ResponseEntity<Collection<Meeting>>(meetings, HttpStatus.OK);
+	public ResponseEntity<?> getMeetings(@RequestParam(value = "sort",required=false) String method) {
+		
+		if (method != null) {
+			if (method.equals("title")) {
+				// pobranie wszystkich
+				Collection<Meeting> meetings = meetingService.getAll();
+				// zmiana na ArrayList
+				ArrayList<Meeting> meetingsList = new ArrayList<Meeting>(Collections.unmodifiableCollection(meetings));
+				// SORTOWANIE
+				Collections.sort(meetingsList);
+				return new ResponseEntity<Collection<Meeting>>(meetingsList, HttpStatus.OK);
+			}
+			else {
+				return new ResponseEntity(HttpStatus.METHOD_NOT_ALLOWED);
+			}
+		} else {
+			Collection<Meeting> meetings = meetingService.getAll();
+			return new ResponseEntity<Collection<Meeting>>(meetings, HttpStatus.OK);
+		}
 	}
-
-	@RequestMapping(value = "/sorted", method = RequestMethod.GET)
+	
+// niepotrzebne, zmienione na GET, a nie url
+/*	@RequestMapping(value = "/sorted", method = RequestMethod.GET)
 	public ResponseEntity<?> getSortedMeetings() {
 		// pobranie wszystkich
 		Collection<Meeting> meetings = meetingService.getAll();
@@ -47,7 +66,9 @@ public class MeetingRestController {
 		Collections.sort(meetingsList);
 		return new ResponseEntity<Collection<Meeting>>(meetingsList, HttpStatus.OK);
 	}
-
+*/
+	
+	// detale pojedynczego meetingu
 	@RequestMapping(value = "/{id}", method = RequestMethod.GET)
 	public ResponseEntity<?> getMeeting(@PathVariable("id") Long id) {
 		Meeting meeting = meetingService.findById(id);
@@ -57,6 +78,7 @@ public class MeetingRestController {
 		return new ResponseEntity<Meeting>(meeting, HttpStatus.OK);
 	}
 
+	// dodawanie nowego
 	@RequestMapping(value = "", method = RequestMethod.POST)
 	public ResponseEntity<?> addMeeting(@RequestBody Meeting meeting) {
 		// czy nie istnieje
@@ -145,6 +167,7 @@ public class MeetingRestController {
 		return new ResponseEntity<Meeting>(requestedMeeting, HttpStatus.OK);
 	}
 
+	// search meetingu po tytule i opisie
 	@RequestMapping(value = "/search", method = RequestMethod.POST)
 	public ResponseEntity<?> searchMeetings(@RequestBody SearchString searchString) {
 		HashSet<Meeting> newSet = new HashSet<Meeting>();
@@ -165,6 +188,7 @@ public class MeetingRestController {
 		}
 	}
 
+	// search meetingow po userze
 	@RequestMapping(value = "/search/{id}", method = RequestMethod.GET)
 	public ResponseEntity<?> searchMeetingsByUser(@PathVariable("id") String id) {
 		// sprawdzanie czy taki user jest
