@@ -32,42 +32,75 @@ public class MeetingRestController {
 	@Autowired
 	MeetingService meetingService;
 
-	// wyswietlanie randomowej listy meetingow oraz posortowanej wg title
+	// 3 funkcjonalnosci : opcjonalne filtrowanie po title i desc (search) ,
+	// opcjonalnie sort wg title i na koniec lista
 	@RequestMapping(value = "", method = RequestMethod.GET)
-	public ResponseEntity<?> getMeetings(@RequestParam(value = "sort",required=false) String method) {
-		
+	public ResponseEntity<?> getMeetings(@RequestParam(value = "sort", required = false) String method,
+			@RequestParam(value = "title", required = false) String titleSubstring,
+			@RequestParam(value = "desc", required = false) String descSubstring) {
+
+		// pobranie
+		Collection<Meeting> meetings = meetingService.getAll();
+
+		// odfiltrowanie po title
+		if (titleSubstring != null) {
+			HashSet<Meeting> newSet = new HashSet<Meeting>();
+			for (Meeting m : meetings) {
+				if (!m.getTitle().contains(titleSubstring)) {
+					newSet.add(m);
+				}
+			}
+			for (Meeting m : newSet) {
+				meetings.remove(m);
+			}
+		}
+		// koniec odfiltrowania po title
+
+		// odfiltrowanie po desc
+		if (descSubstring != null) {
+			HashSet<Meeting> newSet = new HashSet<Meeting>();
+			for (Meeting m : meetings) {
+				if (!m.getTitle().contains(descSubstring)) {
+					newSet.add(m);
+				}
+			}
+			for (Meeting m : newSet) {
+				meetings.remove(m);
+			}
+		}
+		// koniec odfiltrowania po desc
+
+		// opcjonalne sortowanie
 		if (method != null) {
 			if (method.equals("title")) {
-				// pobranie wszystkich
-				Collection<Meeting> meetings = meetingService.getAll();
 				// zmiana na ArrayList
 				ArrayList<Meeting> meetingsList = new ArrayList<Meeting>(Collections.unmodifiableCollection(meetings));
 				// SORTOWANIE
 				Collections.sort(meetingsList);
 				return new ResponseEntity<Collection<Meeting>>(meetingsList, HttpStatus.OK);
-			}
-			else {
+			} else {
 				return new ResponseEntity(HttpStatus.METHOD_NOT_ALLOWED);
 			}
 		} else {
-			Collection<Meeting> meetings = meetingService.getAll();
-			return new ResponseEntity<Collection<Meeting>>(meetings, HttpStatus.OK);
+			if (meetings.size() > 0) {
+				return new ResponseEntity<Collection<Meeting>>(meetings, HttpStatus.OK);
+			} else {
+				return new ResponseEntity(new EmptyJsonResponse(), HttpStatus.OK);
+			}
 		}
 	}
-	
-// niepotrzebne, zmienione na GET, a nie url
-/*	@RequestMapping(value = "/sorted", method = RequestMethod.GET)
-	public ResponseEntity<?> getSortedMeetings() {
-		// pobranie wszystkich
-		Collection<Meeting> meetings = meetingService.getAll();
-		// zmiana na ArrayList
-		ArrayList<Meeting> meetingsList = new ArrayList<Meeting>(Collections.unmodifiableCollection(meetings));
-		// SORTOWANIE
-		Collections.sort(meetingsList);
-		return new ResponseEntity<Collection<Meeting>>(meetingsList, HttpStatus.OK);
-	}
-*/
-	
+
+	// niepotrzebne, zmienione na GET, a nie url
+	/*
+	 * @RequestMapping(value = "/sorted", method = RequestMethod.GET) public
+	 * ResponseEntity<?> getSortedMeetings() { // pobranie wszystkich
+	 * Collection<Meeting> meetings = meetingService.getAll(); // zmiana na
+	 * ArrayList ArrayList<Meeting> meetingsList = new
+	 * ArrayList<Meeting>(Collections.unmodifiableCollection(meetings)); //
+	 * SORTOWANIE Collections.sort(meetingsList); return new
+	 * ResponseEntity<Collection<Meeting>>(meetingsList, HttpStatus.OK); }
+	 */
+
 	// detale pojedynczego meetingu
 	@RequestMapping(value = "/{id}", method = RequestMethod.GET)
 	public ResponseEntity<?> getMeeting(@PathVariable("id") Long id) {
